@@ -117,8 +117,21 @@ async function getFirstPromiseResult(promises) {
  * [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)] => Promise fulfilled with [1, 2, 3]
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)] => Promise rejected with 2
  */
-function getAllOrNothing(/* promises */) {
-  throw new Error('Not implemented');
+async function getAllOrNothing(promises, ans = []) {
+  if (promises.length === 0)
+    return new Promise((resolve) => {
+      resolve(ans);
+    });
+  const a = promises[0];
+  try {
+    const c = await a;
+    ans.push(c);
+    return getAllOrNothing(promises.slice(1), ans);
+  } catch (e) {
+    return new Promise((resolve, rejected) => {
+      rejected(e);
+    });
+  }
 }
 
 /**
