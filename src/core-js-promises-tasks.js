@@ -146,8 +146,20 @@ async function getAllOrNothing(promises, ans = []) {
  * [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)] => Promise fulfilled with [1, 2, 3]
  * [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)]  => Promise fulfilled with [1, null, 3]
  */
-function getAllResult(/* promises */) {
-  throw new Error('Not implemented');
+async function getAllResult(promises, ans = []) {
+  if (promises.length === 0)
+    return new Promise((resolve) => {
+      resolve(ans);
+    });
+  const a = promises[0];
+  try {
+    const c = await a;
+    ans.push(c);
+    return getAllResult(promises.slice(1), ans);
+  } catch (e) {
+    ans.push(null);
+    return getAllResult(promises.slice(1), ans);
+  }
 }
 
 /**
