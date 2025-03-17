@@ -180,8 +180,18 @@ async function getAllResult(promises, ans = []) {
  * [promise1, promise4, promise3] => Promise.resolved('104030')
  * [promise1, promise4, promise3, promise2] => Promise.resolved('10403020')
  */
-function queuePromises(/* promises */) {
-  throw new Error('Not implemented');
+async function queuePromises(promises, ans = '') {
+  if (promises.length === 0)
+    return new Promise((resolve) => {
+      resolve(ans);
+    });
+  const a = promises[0];
+  try {
+    const c = await a;
+    return queuePromises(promises.slice(1), ans + c);
+  } catch (e) {
+    return queuePromises(promises.slice(1), ans);
+  }
 }
 
 module.exports = {
